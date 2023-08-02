@@ -1,0 +1,15 @@
+GET  http://localhost:3001/persons/
+
+###
+DELETE http://localhost:3001/persons/
+
+###
+POST  http://localhost:3001/persons/
+content-type: application/json
+
+   
+
+{   "id":"0",
+    "name": "sync",
+    "number": "23-89700809"
+}

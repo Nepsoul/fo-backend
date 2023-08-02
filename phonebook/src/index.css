@@ -1,0 +1,16 @@
+.error {
+  color: rgb(100, 71, 2);
+  font-size: bold;
+  font-size: 50;
+  background-color: yellow;
+}
+.update {
+  color: green;
+  font-size: bold;
+  font-size: 50;
+  background-color: lightpink;
+}
+.Delete {
+  color: red;
+  background-color: azure;
+}

@@ -1,0 +1,42 @@
+{
+  "persons": [
+    {
+      "name": "Arto Hellas",
+      "number": "040-123456",
+      "id": 1
+    },
+    {
+      "name": "Ada Lovelace",
+      "number": "39-44-5323523",
+      "id": 2
+    },
+    {
+      "name": "Dan Abramov",
+      "number": "12-43-234345",
+      "id": 3
+    },
+    {
+      "name": "nm",
+      "numbers": "12",
+      "id": 4,
+      "number": "12"
+    },
+    {
+      "name": "kala",
+      "numbers": "34",
+      "id": 5
+    },
+    {
+      "name": "high",
+      "numbers": "34",
+      "id": 6,
+      "number": "34"
+    },
+    {
+      "name": "mala",
+      "numbers": "45",
+      "id": 7,
+      "number": "45"
+    }
+  ]
+}
