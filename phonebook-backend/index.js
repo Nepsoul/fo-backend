@@ -5,7 +5,7 @@ const cors = require("cors");
 const App = express();
 App.use(express.json());
 App.use(express.static("build"));
-//App.use(cors());
+App.use(cors());
 App.use(
   morgan(function (tokens, req, res) {
     return [
@@ -66,9 +66,6 @@ App.get("/info", (request, response) => {
   );
 });
 
-App.get("/persons", (request, response) => {
-  response.json(persons);
-});
 App.get("/persons/:id", (request, response) => {
   const currentId = Number(request.params.id);
   const thisPerson = persons.find((person) => person.id === currentId);
