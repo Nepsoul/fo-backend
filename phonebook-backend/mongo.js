@@ -7,29 +7,55 @@ if (process.argv.length < 3) {
 
 const password = process.argv[2];
 
+//password should be hardcorded
 const url = `mongodb+srv://mangoose:${password}@cluster0.oxhvxoo.mongodb.net/node-phonebook?retryWrites=true&w=majority`;
 
 mongoose.set("strictQuery", false);
 mongoose.connect(url);
 
-const noteSchema = new mongoose.Schema({
-  name: String,
-  number: Number,
-});
-
-const Person = mongoose.model("Person", noteSchema);
-
-// const person = new Person({
-//   name: "jason",
-//   number: 9607065476,
-// });
-
-Person.find({}).then((result) => {
-  result.forEach((note) => {
-    console.log(note);
+if (process.argv.length > 3) {
+  const personSchema = new mongoose.Schema({
+    name: String,
+    // number: Number,
+    number: String, // number with charater
   });
-  mongoose.connection.close();
-});
+
+  const Person = mongoose.model("Person", personSchema);
+
+  mongoose
+    .connect(url)
+    .then((result) => {
+      console.log("connected");
+
+      const person = new Person({
+        name: process.argv[3],
+        number: process.argv[4],
+      });
+      person.save();
+      // const person = new Person({
+      //   name: "jason",
+      //   number: 9607065476,
+      // });
+
+      const persons = Person.find({});
+      return persons;
+    })
+    .then((result) => {
+      result.forEach((person) => {
+        console.log(person);
+      });
+      console.log("person data saved!");
+      mongoose.connection.close();
+    })
+    .catch((error) => console.log(error, "catch error"));
+}
+
+// Person.find({}).then((result) => {
+//   result.forEach((person) => {
+//     console.log(person);
+//   });
+//   mongoose.connection.close();
+// });
 
 // person.save().then((result) => {
 //   console.log("person data saved!");
