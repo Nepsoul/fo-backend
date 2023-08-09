@@ -9,7 +9,7 @@ content-type: application/json
 
    
 
-{   "id":"0",
-    "name": "sync",
-    "number": "23-89700809"
+{   
+    "name": "adding data in database",
+    "number": 2389700809
 }

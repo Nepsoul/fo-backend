@@ -23,7 +23,6 @@ const App = () => {
   const [seaRch, setSearch] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [colorChange, setColor] = useState("");
-
   useEffect(() => {
     UpdateService.getAll()
       .then((response) => {
@@ -126,8 +125,12 @@ const App = () => {
     //in this line code is resolved from lt. to rt. i.e. from x.name
     //in here x(array).name(key obj) this resolves and lowercase method make to lower the string and then include method used
     //.toLowercase() => to make case sensitive
+
+    //after connection to the database this sensitive case make the app crash because in database we have posted numbers only
+    // and persons filtering using name field that's why crashed app
     x.name.toLowerCase().includes(seaRch.toLowerCase())
   );
+
 
   let showPersons = seaRch === "" ? persons : newSearch; //ternery method
 
