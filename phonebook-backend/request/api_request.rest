@@ -10,6 +10,15 @@ content-type: application/json
    
 
 {   
-    "name": "adding data in database",
-    "number": 2389700809
+    "name": "adding data",
+    "number": "123456"
+}
+
+###
+PUT http://localhost:3001/persons/64d4a0f70013dd456642a7dd
+content-type: application/json
+
+{
+    "name": "adding data",
+    "number": "00068768979"
 }

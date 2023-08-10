@@ -5,14 +5,14 @@ const mongoose = require("mongoose");
 
 const password = process.argv[2];
 
-const url = `mongodb+srv://mangoose:@cluster0.oxhvxoo.mongodb.net/node-phonebook?retryWrites=true&w=majority`;
+const url = `mongodb+srv://username:ps@cluster0.oxhvxoo.mongodb.net/node-phonebook?retryWrites=true&w=majority`;
 
 mongoose.set("strictQuery", false);
 mongoose.connect(url);
 
 const personSchema = new mongoose.Schema({
   name: String,
-  number: Number,
+  number: String,
 });
 
 personSchema.set("toJSON", {
@@ -22,14 +22,14 @@ personSchema.set("toJSON", {
     delete returnedObject.__v;
   },
 });
-
 const Person = mongoose.model("Person", personSchema);
 
-const App = express();
-App.use(express.json());
-App.use(express.static("build"));
-App.use(cors());
-App.use(
+const app = express();
+app.use(express.static("build"));
+app.use(express.json());
+// app.use(requestLogger); //request.body is undefined
+app.use(cors());
+app.use(
   morgan(function (tokens, req, res) {
     return [
       tokens.method(req, res),
@@ -55,49 +55,24 @@ morgan(function (tokens, req, res) {
   ].join(" ");
 });
 
-// let persons = [
-//   {
-//     id: 1,
-//     name: "Arto Hellas",
-//     number: "040-123456",
-//   },
-//   {
-//     id: 2,
-//     name: "Ada Lovelace",
-//     number: "39-44-5323523",
-//   },
-//   {
-//     id: 3,
-//     name: "Dan Abramov",
-//     number: "12-43-234345",
-//   },
-//   {
-//     id: 4,
-//     name: "Mary Poppendieck",
-//     number: "39-23-6423122",
-//   },
-// ];
-
-let person = [];
-
-App.get("/", (request, response) => {
+app.get("/", (request, response) => {
   response.send("<h1>hello<h1/>");
 });
 
-App.get("/info", (request, response) => {
+app.get("/info", (request, response) => {
   const personLength = Person.length;
   response.send(
     `Phonebook has info for ${personLength} people <br/> ${new Date()}`
   );
 });
-App.get("/persons", (request, response) => {
+app.get("/persons", (request, response) => {
   Person.find({}).then((result) => {
     console.dir(result);
     // result.forEach((person) => console.log(person));
     response.json(result);
   });
 });
-App.get("/persons/:id", (request, response) => {
+app.get("/persons/:id", (request, response, next) => {
   Person.findById(request.params.id)
     .then((result) => {
       if (result) {
@@ -109,14 +84,20 @@ App.get("/persons/:id", (request, response) => {
         });
       }
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      next(error);
+      // console.log(error);
+      // response.status(400).send({ error: "malformatted id" });
+    });
 });
-App.delete("/persons/:id", (request, response) => {
-  const currentId = Number(request.params.id);
-  Person = Person.filter((person) => person.id !== currentId);
-  response.status(204).end();
+app.delete("/persons/:id", (request, response, next) => {
+  Person.findByIdAndRemove(request.params.id)
+    .then((result) => {
+      response.status(204).end();
+    })
+    .catch((error) => next(error));
 });
-App.post("/persons", (request, response) => {
+app.post("/persons", (request, response) => {
   const newData = request.body;
 
   // newData.id = Math.floor(Math.random() * Persons.length + 1000000000000000);
@@ -154,7 +135,47 @@ App.post("/persons", (request, response) => {
   // response.status(201).json(newData);
 });
 
+app.put("/persons/:id", (request, response, next) => {
+  let body = request.body;
+  const updatePerson = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person.findByIdAndUpdate(request.params.id, updatePerson, { new: true })
+    .then((updatedPerson) => {
+      response.json(updatedPerson);
+    })
+    .catch((error) => next(error));
+});
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
+  }
+
+  next(error);
+};
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+// handler of requests with unknown endpoint
+app.use(unknownEndpoint);
+
+app.use((request, response, next) => {
+  response.status(404).send("<h1>No routes found for this request</h1>");
+});
+
+app.use(express.json());
+// this has to be the last loaded middleware.
+app.use(errorHandler);
+
 const PORT = process.env.PORT || 3001;
-App.listen(PORT, () => {
+app.listen(PORT, () => {
   console.log("server listening on 3001");
 });
