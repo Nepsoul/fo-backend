@@ -10,7 +10,7 @@ content-type: application/json
    
 
 {   
-    "name": "adding data",
+    "name": "ad",
     "number": "123456"
 }
 

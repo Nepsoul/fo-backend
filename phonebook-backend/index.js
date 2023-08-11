@@ -4,7 +4,6 @@ const cors = require("cors");
 
 //importing data through shcema
 const Person = require("./models/model");
-console.log(Person, "person schema");
 
 const app = express();
 app.use(express.static("build"));
@@ -79,7 +78,7 @@ app.delete("/persons/:id", (request, response, next) => {
     })
     .catch((error) => next(error));
 });
-app.post("/persons", (request, response) => {
+app.post("/persons", (request, response, next) => {
   const newData = request.body;
 
   // newData.id = Math.floor(Math.random() * Persons.length + 1000000000000000);
@@ -109,9 +108,12 @@ app.post("/persons", (request, response) => {
     number: newData.number,
   });
 
-  person.save().then((result) => {
-    response.json(result);
-  });
+  person
+    .save()
+    .then((result) => {
+      response.json(result);
+    })
+    .catch((error) => next(error));
   // persons.push(newData);
 
   // response.status(201).json(newData);
