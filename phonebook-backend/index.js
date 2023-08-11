@@ -1,28 +1,10 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
-const mongoose = require("mongoose");
 
-const password = process.argv[2];
-
-const url = `mongodb+srv://username:ps@cluster0.oxhvxoo.mongodb.net/node-phonebook?retryWrites=true&w=majority`;
-
-mongoose.set("strictQuery", false);
-mongoose.connect(url);
-
-const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
-});
-
-personSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
-    delete returnedObject.__v;
-  },
-});
-const Person = mongoose.model("Person", personSchema);
+//importing data through shcema
+const Person = require("./models/model");
+console.log(Person, "person schema");
 
 const app = express();
 app.use(express.static("build"));
@@ -177,5 +159,5 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log("server listening on 3001");
+  console.log(`server listening on ${PORT}`);
 });
