@@ -133,6 +133,10 @@ app.put("/persons/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
+app.use((request, response, next) => {
+  response.status(404).send("<h1>No routes found for this request</h1>");
+});
+
 const errorHandler = (error, request, response, next) => {
   console.error(error.message);
 
@@ -150,10 +154,6 @@ const unknownEndpoint = (request, response) => {
 };
 // handler of requests with unknown endpoint
 app.use(unknownEndpoint);
-
-app.use((request, response, next) => {
-  response.status(404).send("<h1>No routes found for this request</h1>");
-});
 
 app.use(express.json());
 // this has to be the last loaded middleware.
