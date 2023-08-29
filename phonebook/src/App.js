@@ -127,7 +127,8 @@ const App = () => {
     //.toLowercase() => to make case sensitive
 
     //after connection to the database this sensitive case make the app crash because in database we have posted numbers only
-    // and persons filtering using name field that's why crashed app
+    // and persons filtering using name field, while searching from database then at the start if find the numner in data base, number and name string doesn't 
+    //match that's why crashed app, so for soln empty the database 
     x.name.toLowerCase().includes(seaRch.toLowerCase())
   );
 
